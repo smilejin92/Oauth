@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Welcome</title>
+  </head>
+  <body>
+    Hi
+    <script type="text/javascript">
+      function init() {
+        // Load auth2 library from Google API
+        console.log('Google API loaded')
+        gapi.load('auth2', function() {
+          console.log('auth2 library loaded');
+          // Initialize GoogleAuth object
+          window.gauth = gapi.auth2.init({
+            client_id:'824516325818-bjf8eklp8rgcqm60ot7fojlc5p2u88o9.apps.googleusercontent.com'
+          })
+          gauth.then(function() {
+            // onInit
+            console.log('gauth initialized');
+            // if a user logged-in with Google account,
+            var curUser = gauth.currentUser.get();
+            printInfo(curUser);
+          }, function() { // error in initializing GoogleAuth object
+            console.log('gauth not initialized');
+          })
+        })
+      }
+
+      function printInfo(googleUser) {
+        var profile = googleUser.getBasicProfile();
+        console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+        console.log('Name: ' + profile.getName());
+        console.log('Image URL: ' + profile.getImageUrl());
+        console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+      }
+
+      function logOut() {
+        console.log('in logOut()');
+        // if a user logged-in with Google account,
+        gauth.signOut().then(function() {
+          console.log('logged-out');
+          window.location.href = "index.html";
+        })
+      }
+    </script>
+
+    <input type="button" id="logOutBtn" value="Log-out" onclick="logOut()">
+    <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
+  </body>
+</html>
