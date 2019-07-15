@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <!-- Google API Resource -->
+    <title>OAuth Demo</title>
+  </head>
+
+  <body>
+    <!-- script for Google Login -->
+    <script>
+      // Load Google API
+      function init() {
+        // Load auth2 library from Google API
+        console.log('Google API loaded')
+        gapi.load('auth2', function() {
+          console.log('auth2 library loaded');
+          // Initialize GoogleAuth object
+          window.gauth = gapi.auth2.init({
+            client_id:'824516325818-bjf8eklp8rgcqm60ot7fojlc5p2u88o9.apps.googleusercontent.com'
+          })
+        })
+      }
+
+      // Log-In with Google Account
+      function gLogin() {
+        console.log('in gLogin()');
+        // "gauth.then" must follow after gauth is initialized.
+        // take two functions (onInit, onError) as params
+        gauth.then(function() {
+          // onInit
+          console.log('gauth initialized');
+          // if a user is not signed into Google account
+          if (!gauth.isSignedIn.get()) {
+            // prompt Google Login
+            gauth.signIn().then(function() {
+              if (gauth.isSignedIn.get()) {
+                // redirect to hello page
+                window.location.href = "hello.html";
+              }
+            });
+          }
+          // if a user is already signed into Google account
+          else {
+            console.log('already signed-in');
+            // redirect to hello page
+            window.location.href = "hello.html";
+          }
+        }, function() { // error in initializing GoogleAuth object
+          console.log('gauth not initialized');
+        })
+      }
+    </script>
+
+    <!-- script for facebook login -->
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '812095125850612',
+          cookie     : true,
+          xfbml      : true,
+          version    : 'v3.3'
+        });
+        FB.getLoginStatus(function(response) {
+            statusChangeCallback(response);
+        });
+      };
+
+      (function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+         js.src = "https://connect.facebook.net/en_US/sdk.js";
+         fjs.parentNode.insertBefore(js, fjs);
+       }(document, 'script', 'facebook-jssdk'));
+
+       function statusChangeCallback(response) {
+         if (response.status ==='connected') {
+           console.log('Logged in and authenticated');
+         } else {
+           console.log('Not authenticated');
+         }
+       }
+    </script>
+
+
+    <input type="button" id="gLoginBtn" value="Log-In with Google Account" onclick="gLogin()">
+
+    <!-- Load Google API onload -->
+    <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
+  </body>
+</html>
